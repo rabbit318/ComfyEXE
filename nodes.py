@@ -34,6 +34,9 @@ import importlib
 import folder_paths
 import latent_preview
 
+from modal import gpu
+from workflow_api_ping import stub
+
 def before_node_execution():
     comfy.model_management.throw_exception_if_processing_interrupted()
 
@@ -42,6 +45,7 @@ def interrupt_processing(value=True):
 
 MAX_RESOLUTION=8192
 
+@stub.cls(gpu=gpu.A10G(), container_idle_timeout=240)
 class CLIPTextEncode:
     @classmethod
     def INPUT_TYPES(s):
@@ -254,6 +258,7 @@ class ConditioningSetTimestepRange:
             c.append(n)
         return (c, )
 
+@stub.cls(gpu=gpu.A10G(), container_idle_timeout=240)
 class VAEDecode:
     @classmethod
     def INPUT_TYPES(s):
@@ -461,6 +466,7 @@ class CheckpointLoader:
         ckpt_path = folder_paths.get_full_path("checkpoints", ckpt_name)
         return comfy.sd.load_checkpoint(config_path, ckpt_path, output_vae=True, output_clip=True, embedding_directory=folder_paths.get_folder_paths("embeddings"))
 
+@stub.cls(gpu=gpu.A10G(), container_idle_timeout=240)
 class CheckpointLoaderSimple:
     @classmethod
     def INPUT_TYPES(s):
@@ -534,6 +540,7 @@ class CLIPSetLastLayer:
         clip.clip_layer(stop_at_clip_layer)
         return (clip,)
 
+@stub.cls(gpu=gpu.A10G(), container_idle_timeout=240)
 class LoraLoader:
     def __init__(self):
         self.loaded_lora = None
@@ -1211,6 +1218,7 @@ def common_ksampler(model, seed, steps, cfg, sampler_name, scheduler, positive, 
     out["samples"] = samples
     return (out, )
 
+@stub.cls(gpu=gpu.A10G(), container_idle_timeout=240)
 class KSampler:
     @classmethod
     def INPUT_TYPES(s):
@@ -1270,6 +1278,7 @@ class KSamplerAdvanced:
             disable_noise = True
         return common_ksampler(model, noise_seed, steps, cfg, sampler_name, scheduler, positive, negative, latent_image, denoise=denoise, disable_noise=disable_noise, start_step=start_at_step, last_step=end_at_step, force_full_denoise=force_full_denoise)
 
+@stub.cls(gpu=gpu.A10G(), container_idle_timeout=240)
 class SaveImage:
     def __init__(self):
         self.output_dir = folder_paths.get_output_directory()
@@ -1505,6 +1514,7 @@ class ImageBatch:
         s = torch.cat((image1, image2), dim=0)
         return (s,)
 
+@stub.cls(gpu=gpu.A10G(), container_idle_timeout=240)
 class EmptyImage:
     def __init__(self, device="cpu"):
         self.device = device

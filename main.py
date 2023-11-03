@@ -5,6 +5,7 @@ import os
 import importlib.util
 import folder_paths
 import time
+from workflow_api_ping import stub 
 
 def execute_prestartup_script():
     def execute_script(script_path):
@@ -119,7 +120,7 @@ def cleanup_temp():
     if os.path.exists(temp_dir):
         shutil.rmtree(temp_dir, ignore_errors=True)
 
-
+@stub.function()
 def load_extra_path_config(yaml_path):
     with open(yaml_path, 'r') as stream:
         config = yaml.safe_load(stream)
