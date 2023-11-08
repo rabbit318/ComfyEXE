@@ -6,7 +6,17 @@ import torch
 
 from modal import Image, Stub, gpu
 
-stub = Stub("Stable-Diffusion-Basic")
+image = (
+    Image.debian_slim()
+    .pip_install(
+        "torch", "torchvision" "torchaudio", extra_index_url = "https://download.pytorch.org/whl/cu121"
+    )
+    .pip_install_from_requirements(
+        "./requirements.txt"
+    )
+)
+
+stub = Stub("Stable-Diffusion-Basic", image=image)
 
 def get_value_at_index(obj: Union[Sequence, Mapping], index: int) -> Any:
     """Returns the value at the given index of a sequence or mapping.
