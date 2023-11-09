@@ -5,7 +5,19 @@ import os
 import importlib.util
 import folder_paths
 import time
-from workflow_api_ping import stub 
+from modal import Image, Stub, gpu
+
+image = (
+    Image.debian_slim()
+    .pip_install(
+        "torch", "torchvision" "torchaudio", extra_index_url = "https://download.pytorch.org/whl/cu121"
+    )
+    .pip_install_from_requirements(
+        "./requirements.txt"
+    )
+)
+
+stub = Stub("Stable-Diffusion-Basic", image=image)
 
 def execute_prestartup_script():
     def execute_script(script_path):

@@ -35,7 +35,7 @@ import folder_paths
 import latent_preview
 
 from modal import gpu
-from workflow_api_ping import stub
+from main import stub
 
 def before_node_execution():
     comfy.model_management.throw_exception_if_processing_interrupted()

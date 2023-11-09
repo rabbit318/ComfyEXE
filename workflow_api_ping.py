@@ -2,21 +2,12 @@ import os
 import random
 import sys
 from typing import Sequence, Mapping, Any, Union
-import torch
+import torch #####Question: import torch here or after creating image?
 
 from modal import Image, Stub, gpu
+from main import stub
 
-image = (
-    Image.debian_slim()
-    .pip_install(
-        "torch", "torchvision" "torchaudio", extra_index_url = "https://download.pytorch.org/whl/cu121"
-    )
-    .pip_install_from_requirements(
-        "./requirements.txt"
-    )
-)
-
-stub = Stub("Stable-Diffusion-Basic", image=image)
+#from main import stub
 
 def get_value_at_index(obj: Union[Sequence, Mapping], index: int) -> Any:
     """Returns the value at the given index of a sequence or mapping.
@@ -90,7 +81,6 @@ def add_extra_model_paths() -> None:
         load_extra_path_config(extra_model_paths)
     else:
         print("Could not find the extra_model_paths config file.")
-
 
 add_comfyui_directory_to_sys_path()
 add_extra_model_paths()
